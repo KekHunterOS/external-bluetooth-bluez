@@ -992,21 +992,6 @@ static int bcm2035(int fd, struct uart_t *u, struct termios *ti)
 }
 #endif
 
-int rtk_init(int fd, int proto, int speed, struct termios *ti);
-int rtk_post(int fd, int proto, struct termios *ti);
-
-static int realtek_init(int fd, struct uart_t *u, struct termios *ti)
-{
-	fprintf(stderr, "Realtek Bluetooth init uart with init speed:%d, final_speed:%d, type:HCI UART %s\n", u->init_speed, u->speed, (u->proto == HCI_UART_H4)? "H4":"H5" );
-	return rtk_init(fd, u->proto, u->speed, ti);
-}
-
-static int realtek_post(int fd, struct uart_t *u, struct termios *ti)
-{
-	fprintf(stderr, "Realtek Bluetooth post process\n");
-	return rtk_post(fd, u->proto, ti);
-}
-
 struct uart_t uart[] = {
 	{ "any",        0x0000, 0x0000, HCI_UART_H4,   115200, 115200,
 				FLOW_CTL, DISABLE_PM, NULL, NULL     },
@@ -1128,16 +1113,6 @@ struct uart_t uart[] = {
 			AMP_DEV, DISABLE_PM, NULL, NULL, NULL },
 
 #endif
-
-	/* Realtek Bluetooth H4*/
-	/* H4 will set 115200 baudrate and flow control enable by default*/
-	{ "rtk_h4",     0x0000, 0x0000, HCI_UART_H4, 115200, 115200,
-			0, DISABLE_PM, NULL, realtek_init, realtek_post },
-
-	/* Realtek Bluetooth H5*/
-	/* H5 will set 115200 baudrate and flow control disable by default */
-	{ "rtk_h5",     0x0000, 0x0000, HCI_UART_3WIRE, 115200, 115200,
-			0, DISABLE_PM, NULL, realtek_init, realtek_post },
 
 	{ NULL, 0 }
 };
